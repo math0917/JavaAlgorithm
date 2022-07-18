@@ -38,14 +38,9 @@ import java.util.StringTokenizer;
    사용하는 클래스명이 Solution 이어야 하므로, 가급적 Solution.java 를 사용할 것을 권장합니다.
    이러한 상황에서도 동일하게 java Solution 명령으로 프로그램을 수행해볼 수 있습니다.
  */
-class Solution
-{
-    static int count;
-    static int length;
-    static String string;
-    static int [][] dp;
-    public static void main(String args[]) throws Exception
-    {
+class Solution {
+    static int MOD = 1000000007;
+    public static void main(String args[]) throws Exception {
 		/*
 		   아래의 메소드 호출은 앞으로 표준 입력(키보드) 대신 input.txt 파일로부터 읽어오겠다는 의미의 코드입니다.
 		   여러분이 작성한 코드를 테스트 할 때, 편의를 위해서 input.txt에 입력을 저장한 후,
@@ -66,15 +61,45 @@ class Solution
 		   여러 개의 테스트 케이스가 주어지므로, 각각을 처리합니다.
 		*/
 
-        for(int test_case = 1; test_case <= T; test_case++)
-        {
-
+        for (int test_case = 1; test_case <= T; test_case++) {
+            st = new StringTokenizer(br.readLine());
+            String string = st.nextToken().toString();
+            int [][] dp = new int [string.length()][16];
+            int firstRowNum = 1 << (string.charAt(0) - 'A');
+            for (int i = 1 ; i< 16; i++){
+                if (((firstRowNum & i) != 0) && (i & 1)!=0){
+                    dp[0][i] = 1;
+                }
+            }
+            for (int i = 1 ; i< string.length();i++){
+                otherRow(string, dp, i);
+            }
+            int result = 0;
+            for (int i = 1; i <16;i ++){
+                result += dp[string.length()-1][i];
+                result %= MOD;
+            }
+            System.out.println("#"+test_case + " "+ result);
         }
-
-
     }
-
-
-
-
+    static void otherRow(String string, int [][]dp, int day) {
+        int thisRowNum = 1<<string.charAt(day)-'A';
+        for (int i = 1 ; i< 16;i ++){
+            if (dp[day-1][i] != 0){
+                for (int j = 1 ;j < 16; j++){
+                    if (((j&thisRowNum) != 0)&& ((i&j) !=0)){
+                        dp[day][j] += dp[day-1][i];
+                        dp[day][j] %= MOD;
+                    }
+                }
+            }
+        }
+    }
 }
+
+
+
+
+
+
+
